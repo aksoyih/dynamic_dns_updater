@@ -2,6 +2,10 @@
 
 This Bash script updates the DNS record of a specified domain hosted on GoDaddy to match the current external IP address of the machine where the script is executed. It is particularly useful for maintaining a dynamic DNS setup.
 
+## Source and Inspiration
+
+This script was inspired by and adapted from the tutorial ["Quick and Dirty Dynamic DNS Using GoDaddy"](https://www.instructables.com/Quick-and-Dirty-Dynamic-DNS-Using-GoDaddy/) on Instructables.
+
 ## Prerequisites
 
 Before using this script, ensure you have the following:
