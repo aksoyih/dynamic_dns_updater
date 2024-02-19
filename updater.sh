@@ -22,7 +22,7 @@ dnsdata=$(curl -s -X GET -H "Authorization: sso-key $gdapikey" "https://api.goda
 gdip=$(echo "$dnsdata" | jq -r '.[].data')
 
 # Fetch current DNS IP address from Cloudflare
-cfip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id' | xargs -I {} curl -s -X GET "https://api.cloudflare.com/client/v4/zones/{}/dns_records?type=A&name=$hostname.$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].content')
+cfip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "Authorization: Bearer $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id' | xargs -I {} curl -s -X GET "https://api.cloudflare.com/client/v4/zones/{}/dns_records?type=A&name=$hostname.$domain" -H "Authorization: Bearer $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].content')
 
 # Log current and GoDaddy DNS IP addresses
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Current External IP is $myip, GoDaddy DNS IP is $gdip, Cloudflare DNS IP is $cfip"
@@ -37,8 +37,8 @@ fi
 # Compare IP addresses and update Cloudflare DNS if necessary
 if [ "$cfip" != "$myip" ] && [ -n "$myip" ]; then
   echo "IP has changed!! Updating on Cloudflare"
-  zone_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
-  record_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records?type=A&name=$hostname.$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
-  curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records/$record_id" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" --data "{\"type\":\"A\",\"name\":\"$hostname.$domain\",\"content\":\"$myip\",\"ttl\":120,\"proxied\":false}"
+  zone_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "Authorization: Bearer $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
+  record_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records?type=A&name=$hostname.$domain" -H "Authorization: Bearer $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
+  curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records/$record_id" -H "Authorization: Bearer $cfapikey" -H "Content-Type: application/json" --data "{\"type\":\"A\",\"name\":\"$hostname.$domain\",\"content\":\"$myip\",\"ttl\":120,\"proxied\":false}"
   logger -p "$logdest" "Changed IP on $hostname.$domain from $cfip to $myip"
 fi
