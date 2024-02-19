@@ -6,7 +6,7 @@ hostname="$HOSTNAME"
 gdapikey="$GD_API_KEY"
 cfemail="$CF_EMAIL"
 cfapikey="$CF_API_KEY"
-logdest="dns_update.log"
+logdest="dns_update.info"
 
 # Ensure required environment variables are set
 if [[ -z "$domain" || -z "$hostname" || -z "$gdapikey" || -z "$cfemail" || -z "$cfapikey" || -z "$logdest" ]]; then
