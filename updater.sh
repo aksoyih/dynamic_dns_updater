@@ -22,7 +22,7 @@ dnsdata=$(curl -s -X GET -H "Authorization: sso-key $gdapikey" "https://api.goda
 gdip=$(echo "$dnsdata" | jq -r '.[].data')
 
 # Fetch current DNS IP address from Cloudflare
-cfip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id' | xargs -I {} curl -s -X GET "https://api.cloudflare.com/client/v4/zones/{}/dns_records?type=A&name=$hostname.$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].content')
+cfip=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id' | xargs -I {} curl -s -X GET "https://api.cloudflare.com/client/v4/zones/{}/dns_records?type=A&name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].content')
 
 # Log current and GoDaddy DNS IP addresses
 echo "$(date '+%Y-%m-%d %H:%M:%S') - Current External IP is $myip, GoDaddy DNS IP is $gdip, Cloudflare DNS IP is $cfip"
