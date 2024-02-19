@@ -38,7 +38,7 @@ fi
 if [ "$cfip" != "$myip" ] && [ -n "$myip" ]; then
   echo "IP has changed!! Updating on Cloudflare"
   zone_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones?name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
-  record_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records?type=A&name=$hostname.$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
-  curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records/$record_id" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" --data "{\"type\":\"A\",\"name\":\"$hostname.$domain\",\"content\":\"$myip\",\"ttl\":120,\"proxied\":false}"
+  record_id=$(curl -s -X GET "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records?type=A&name=$domain" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" | jq -r '.result[0].id')
+  curl -s -X PUT "https://api.cloudflare.com/client/v4/zones/$zone_id/dns_records/$record_id" -H "X-Auth-Email: $cfemail" -H "X-Auth-Key: $cfapikey" -H "Content-Type: application/json" --data "{\"type\":\"A\",\"name\":\"$domain\",\"content\":\"$myip\",\"ttl\":120,\"proxied\":true}"
   logger "Changed IP, updated Cloudflare on $hostname.$domain from $cfip to $myip"
 fi
