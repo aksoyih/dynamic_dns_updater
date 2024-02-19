@@ -1,46 +1,39 @@
-# Dynamic DNS Updater
+# Dynamic DNS Update Script
 
-This Bash script updates the DNS record of a specified domain hosted on GoDaddy to match the current external IP address of the machine where the script is executed. It is particularly useful for maintaining a dynamic DNS setup.
+This Bash script is designed to update the DNS records of a domain hosted on either GoDaddy or Cloudflare dynamically. It retrieves the current external IP address of the machine it's executed on and compares it with the IP addresses stored in the DNS records. If there's a discrepancy, it updates the DNS records accordingly.
 
-## Source and Inspiration
+## Credits
 
 This script was inspired by and adapted from the tutorial ["Quick and Dirty Dynamic DNS Using GoDaddy"](https://www.instructables.com/Quick-and-Dirty-Dynamic-DNS-Using-GoDaddy/) on Instructables.
 
-## Prerequisites
-
-Before using this script, ensure you have the following:
-
-- **GoDaddy API Key**: Obtain an API key from your GoDaddy account with permissions to manage DNS records.
-- **Environment Variables**:
-  - `MY_DOMAIN`: Your domain hosted on GoDaddy.
-  - `MY_HOSTNAME`: The hostname (subdomain) whose DNS record needs to be updated.
-  - `GD_API_KEY`: Your GoDaddy API key.
-  - `LOG_DEST`: Destination for logging (e.g., syslog).
-
 ## Usage
 
-1. Set up the required environment variables.
-2. Execute the script.
+1. Ensure you have the required environment variables set properly:
+   - `DNS_DOMAIN`: The domain whose DNS records need to be updated.
+   - `HOSTNAME`: The hostname whose IP address needs to be updated.
+   - `GD_API_KEY`: GoDaddy API key for authentication.
+   - `CF_EMAIL` and `CF_API_KEY`: Cloudflare authentication credentials.
+   - `logdest`: Destination for logging information.
+
+2. Execute the script. It will fetch the current external IP address, compare it with the IP addresses stored in the DNS records, and update them if necessary.
+
+## Prerequisites
+
+- `jq`: Command-line JSON processor (used for parsing JSON responses).
+- `curl`: Command-line tool for transferring data with URLs.
+- Ensure you have appropriate permissions to modify DNS records for the specified domain.
+
+## Example
 
 ```bash
-chmod +x dynamic_dns_updater.sh
-./dynamic_dns_updater.sh
+# Set environment variables
+export DNS_DOMAIN="example.com"
+export HOSTNAME="subdomain"
+export GD_API_KEY="your_godaddy_api_key"
+export CF_EMAIL="your_cloudflare_email"
+export CF_API_KEY="your_cloudflare_api_key"
+export logdest="dns_update.info"
+
+# Execute the script
+./dynamic_dns_update.sh
 ```
-
-## Functionality
-
-1. Reads environment variables to get domain, hostname, GoDaddy API key, and log destination.
-2. Fetches the current external IP address.
-3. Retrieves the current DNS IP address from GoDaddy.
-4. Compares the current and DNS IP addresses.
-5. If they differ, updates the GoDaddy DNS record with the current IP address.
-
-## Notes
-
-- This script uses the `curl` command for HTTP requests.
-- Ensure that the machine running this script has proper network connectivity.
-- Logging is optional but recommended for tracking IP changes.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
