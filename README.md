@@ -33,5 +33,5 @@ export CF_EMAIL="your_cloudflare_email"
 export CF_API_KEY="your_cloudflare_api_key"
 
 # Execute the script
-./dynamic_dns_update.sh
+./updater.sh
 ```
