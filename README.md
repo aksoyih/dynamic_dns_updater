@@ -33,5 +33,26 @@ export CF_EMAIL="your_cloudflare_email"
 export CF_API_KEY="your_cloudflare_api_key"
 
 # Execute the script
+chmod 700 updater.sh
 ./updater.sh
+```
+
+## Setting up cron
+To set up cronjob
+
+```bash
+chmod 700 updater.sh
+crontab -e
+```
+
+Add the following to the end of the file
+
+```bash
+*/5 * * * * /path/to/updater.sh >/dev/null 2>&1
+```
+
+Save and exit. You can verify that the cron job was added successfully by running:
+
+```bash
+crontab -l
 ```
